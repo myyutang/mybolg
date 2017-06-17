@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>rei</title>
+    <link rel="stylesheet" href="/public/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/public/css/bootstrap-theme.min.css"/>
+    <script src="/public/js/jquery-2.2.0.min.js"></script>
+    <script src="/public/js/bootstrap.js"></script>
+</head>
+<body>
+<ul class="nav nav-tabs">
+    <li role="presentation"><a href="/admin">管理首页</a></li>
+    <li role="presentation" class="active"><a href="/admin/user">用户管理</a></li>
+    <li role="presentation"><a href="/admin/article">文章发布</a></li>
+    <li role="presentation"><a href="/admin/article/list-1.html">文章管理</a></li>
+    <li role="presentation" class="dropdown pull-right">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+            <%=locals.login%> <span class="caret"></span>
+            <p id="nowid" style="display:none;"><%=locals.nowid%></p>
+        </a>
+        <ul class="dropdown-menu">
+            <li role="presentation" class="active"><a href="/logout">退出</a></li>
+        </ul>
+    </li>
+</ul>
+<table class="table table-striped">
+    <tr>
+        <th>ID</th>
+        <th>用户名</th>
+        <th>是否是管理员</th>
+        <th>是否修改</th>
+        <th>修改用户</th>
+
+    </tr>
+    <%for(var i in data){%>
+        <tr>
+        <td><%=data[i]['id']%></td>
+        <td><%=data[i]['username']%></td>
+        <td><%=data[i]['admin']%></td>
+        <td><input type="radio" id="radio" value="<%=data[i]['id']%>" name="radio"></td>
+        <td>
+            <a type="button" class="xiugai" data-toggle="modal" data-target="#myModal">
+                修改
+            </a>
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel"></h4>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <label for="username_xiu"  class="col-sm-2 control-label">用户名</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="username_xiu" placeholder="输入修改后用户名">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password_xiu"  class="col-sm-2 control-label">密码</label>
+                                    <div class="col-sm-10">
+                                        <input type="password" class="form-control" id="password_xiu" placeholder="输入修改后密码">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="radio" name="isadmin" checked="checked"> 是否为管理员
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button type="button" id="result_xiugai" class="btn btn-primary">保存修改</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </td>
+        </tr>
+    <%}%>
+</table>
+<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal2">
+增加
+</button>
+<a href="javascript:window.location.reload(
+)" id="delete">删除</a>
+</body>
+<script>
+   $('#delete').click(()=>{
+       if($('input:radio[name="radio"]:checked').val()){
+           alert($('input:radio[name="radio"]:checked').val());
+       }else {
+           alert('未选中任何修改或删除内容');
+       }
+        $.ajax({
+            url:'/admin/delete',
+            type:'post',
+            dataType:'json',
+            data:{
+
+                id:$("#radio:checked").val(),
+                nowid:$("#nowid").text()
+            },
+            success:(data)=>{
+            alert("删除成功")
+            },
+            error:(data)=>{
+                alert("失败")
+            }
+        })
+    })
+   $('#result_xiugai').click(()=>{
+       if($('input:radio[name="isadmin"]:checked').val()){
+           var isadmin=1;
+       }else {  var isadmin=0;}
+
+
+       var Val=Number($('input:radio[name="radio"]:checked').val());//返回选中状态的id值
+
+      if(Val){
+          $.ajax({
+              url:'/admin/xiugai',
+              type:'post',
+              dataType:'json',
+              data:{
+                  id:Val,
+                  reusername:$("#username_xiu").val(),
+                  repassword:$("#password_xiu").val(),
+                  Isadmin:isadmin
+              },
+              success:(data)=>{
+                  alert("修改成功")
+              },
+              error:(data)=>{
+                  alert("修改失败")
+              }
+          })
+      }else {
+          alert('未选中任何修改或删除内容');
+      }
+   })
+</script>
+</html>

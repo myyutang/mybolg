@@ -1,0 +1,60 @@
+Index: app.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app.js	(revision )
++++ app.js	(revision )
+@@ -5,46 +5,18 @@
+ var bodyParser=require('body-parser');
+ var cookieParser=require('cookie-parser');
+ var session=require('express-session');
+-var sql=require('./module/mysql');
+-var navdata=require('./module/nav');
++module.exports=app;
+ /*app.use(express.static(__dirname+'/public'));//设置静态文件目录*/
+ app.use('/public',express.static(__dirname+'/public'));//设置静态文件目录(方式2，与第一个的区别)
+ app.set('views',__dirname+'/views');//设置模板位置
+ app.set('view engine','ejs');//设置模板引擎是什么
+-
+ /*body-parser配置*/
+ app.use(bodyParser.json());
+ app.use(bodyParser.urlencoded( { extended:true } ));
+ /*cookie-parser配置*/
+ app.use(cookieParser('key199537'));// 密钥
+ app.use(session( { secret:'node' } ));
+-app.use(function(req,res,next){
+-    if(req.session.navdata===undefined){
+-        navdata(ondata=>{
+-            req.session.navdata=ondata;
+-            console.log( req.session.navdata);
+-
+-            next();
+-        })
+-    }else{
+-        next()
+-    }
+-});
+-app.use(function (req,res,next){
+-    if(req.cookies['login']){
+-        res.locals.login = req.cookies.login.name;
+-        res.locals.nowid=req.cookies.login.id;
+-    }
+-    if(res.locals.login && req.session.admin == undefined){
+-        sql('SELECT * FROM user where username = ?',[res.locals.login],(err,data) => {
+-            req.session.admin = Number(data[0]['admin']);
+-            res.locals.admin =req.session.admin;
+-            next()
+-        })
+-    }else{
+-
+-        next()
+-    }
+-});
++require('./module/configdata');
++app.use('/public/ueditor/ue',require('./ue'));
+ app.use('/',require('./routor/index'));
+-http.createServer(app).listen(9999);
+\ No newline at end of file
++http.createServer(app).listen(8888);
+\ No newline at end of file

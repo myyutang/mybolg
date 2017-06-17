@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zxx">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="HandheldFriendly" content="true">
+    <meta content="telephone=no" name="format-detection">
+    <!-- favicon -->
+    <link rel="shortcut icon" type="image/png" href="favicon.png" />
+
+    <link href="/public/css/main.css" rel="stylesheet" type="text/css" />
+
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+
+    <title></title>
+</head>
+<body>
+<!-- Header -->
+<% include header.ejs%>
+<!-- END header -->
+<!-- header slider -->
+<section>
+    <!-- top news -->
+    <div class="wrap wrap_white">
+        <div class="container title">
+            <h2 class="title__h1 underscore">说说</h2>
+        </div>
+    </div>
+
+    <div class="container">
+        <%if(data[0].length){%>
+        <div class="row" id="article">
+            <div class="col-sm-6" >
+                <div class="thumbnail thumbnail_big">
+                    <a href="/article/<%=data[0][0]['id']%>.html">
+                        <img src="/public/<%=data[0][0]['fengmian']%>" height="349px" width="560px" alt="News">
+                    </a>
+                    <div class="caption thumbnail__caption">
+                        <div class="news caption__news">
+                            <p class="news__category yellow-line"><%=data[0][0]['info']%></p>
+                            <a href="/article/<%=data[0][0]['id']%>.html" class="news__head"><%=data[0][0]['title']%></a>
+                            <p class="news__desc"><%=data[0][0]['zaiyao']%></p>
+                        </div>
+                        <div class="posted">
+                            <span class="posted__date"><%=data[0][0]['time']%></span>
+                            <ul class="posted__icon">
+                                <li>
+                                                <span>
+                                                <i class="icon-comment-empty"></i>29
+                                            </span>
+                                </li>
+                                <li>
+                                                <span>
+                                                <i class="icon-eye"></i><%=data[0][0]['fangwen']%>
+                                            </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <%for(var i in data){%>
+            <%for (var j in data[i]){%>
+            <%if(i==0&&j==0){%>
+            <%}else{%>
+            <div class="col-sm-3">
+                <div class="thumbnail thumbnail_small">
+                    <a href="/article/<%=data[i][j]['id']%>.html" class="thumbnail__link">
+                        <img src="/public/<%=data[i][j]['fengmian']%>" height="153" width="270" alt="News">
+                    </a>
+                    <div class="caption thumbnail__caption">
+                        <div class="news caption__news">
+                            <p class="news__category yellow-line"><%=data[i][j]['info']%></p>
+                            <a href="/article/<%=data[i][j]['id']%>.html" class="news__link">
+                                <p class="news__text"><%=data[i][j]['title']%></p>
+                            </a>
+                        </div>
+                        <div class="posted">
+                            <span class="posted__date"><%=data[i][j]['time']%></span>
+                            <ul class="posted__icon">
+                                <li>
+                                                <span>
+                                                <i class="icon-comment-empty"></i>29
+                                            </span>
+                                </li>
+                                <li>
+                                                <span>
+                                                <i class="icon-eye"></i><%=data[i][j]['fengwen']%>
+                                            </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <%}%>
+
+            <%}%>
+            <%}%>
+        </div>
+        <div id="not_more" style="text-align:center;"></div>
+        <div class="ajax_load">
+            <i class="icon-arrows-cw"></i>Load more
+            <svg id="more" width="128" height="40" viewBox="0 0 128 40" xmlns="http://www.w3.org/2000/svg">
+                <rect x='0' y='0' fill='none' width='128' height='40'></rect>
+            </svg>
+        </div>
+        <%}else{%>
+        暂无内容
+        <%}%>
+    </div>
+    <!-- /container-->
+</section>
+<!-- /top news -->
+<!-- Footer -->
+<% include footer.ejs %>
+<!-- END Footer -->
+<!-- All JavaScript libraries -->
+<script src="/public/js/jquery.min.js"></script>
+<script src="/public/js/bootstrap.min.js"></script>
+<!-- Custom JavaScript -->
+<script src="/public/js/main.js"></script>
+</body>
+<script>
+    var showNumber=0;
+    var length=0;
+    $('#more').click(function(){
+        showNumber=showNumber+9;
+        $.ajax({
+            url:'/says',
+            type:'post',
+            dataType:'json',
+            data:{
+                showNumber:showNumber
+            },success:(data)=>{
+                var moreData=data.data_more;
+                if(length!=moreData.length){
+                    for(var i in moreData){
+                        if(i>length){
+                            $('#article').append('<div class="col-sm-3"><div class="thumbnail thumbnail_small"><a href="/article/'+moreData[i]['id']+'.html" class="thumbnail__link"><img src="/public/'+moreData[i]['fengmian']+'" height="153" width="270" alt="News"></a><div class="caption thumbnail__caption"><div class="news caption__news"><p class="news__category yellow-line">'+moreData[i]['info']+'</p><a href="/article/'+moreData[i]['id']+'.html" class="news__link"><p class="news__text">'+moreData[i]['title']+'</p></a></div><div class="posted"><span class="posted__date">'+moreData[i]['time']+'</span><ul class="posted__icon"><li><span><i class="icon-comment-empty"></i>29</span></li><li><span><i class="icon-eye"></i>'+moreData[i]['fangwen']+'</span></li></ul></div></div></div></div>');
+                        }
+                    }
+                    length=moreData.length;
+                }else{
+                    $('#not_more').append('<div id="not_con">没有更多文章</div>')
+                    setTimeout(function(){
+                        $("#not_con").remove();
+                    },300)
+                }
+            },error:(data)=>{
+
+            }
+        });
+    })
+</script>
+</html>
+

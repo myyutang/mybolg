@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>rei</title>
+    <link rel="stylesheet" href="/public/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/public/css/bootstrap-theme.min.css"/>
+    <script src="/public/js/jquery-2.2.0.min.js"></script>
+    <script src="/public/js/bootstrap.js"></script>
+</head>
+<body>
+<ul class="nav nav-tabs">
+    <li role="presentation" class="active"><a href="/admin">管理首页</a></li>
+    <li role="presentation"><a href="/admin/user">用户管理</a></li>
+    <li role="presentation"><a href="/admin/article">文章发布</a></li>
+    <li role="presentation"><a href="/admin/article/list-1.html">文章管理</a></li>
+    <li role="presentation" class="dropdown pull-right">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+            <%=locals.login%> <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <li role="presentation" class="active"><a href="/logout">退出</a></li>
+        </ul>
+    </li>
+</ul>
+<div class="jumbotron" id="log_success">
+    <h1>管理首页</h1>
+</div>
+</body>
+</html>

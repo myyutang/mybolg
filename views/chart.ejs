@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>chart</title>
+</head>
+<body>
+<input type="text" id="user"><button onclick="enterChar()">进入聊天室</button>
+    <p id="xiaoxi" style="width:300px;min-height:50px;border:1px solid blue"></p>
+    <input type="text" id="content">
+    <button onclick="submit()">发送</button>
+</body>
+<script src="/public/js/jquery.min.js"></script>
+<script src="/public/js/socket.io.min.js"></script>
+<script>
+    //当引入socket的时候会再window下添加一个io的全局
+
+   var xiaoxi=$('#xiaoxi')/*document.getElementById('content');*/
+
+   function enterChar(){
+       var username=$("#user").val();
+       var userid=new Data();
+       var socket=io.connect('/');
+       socket.emit('msg2',{username:username,userid:userid});
+   }
+    function submit(){
+        var content=$("#content").val();
+        socket.emit('msg',{newxiaoxi:content});
+        $("#content").val('')
+    }
+   socket.on('xiaoxi',(data)=>{
+      console.log(data.newxiaoxi)
+       xiaoxi.append(data.newxiaoxi+'<br>')
+   })
+    socket.on('xiaoxi2',(data)=>{
+        console.log(data.username,data.id);
+        xiaoxi.append(data.username+'进入聊天室');
+    })
+</script>
+</html>

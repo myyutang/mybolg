@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>rei</title>
+    <link rel="stylesheet" href="/public/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/public/css/bootstrap-theme.min.css"/>
+    <script src="/public/js/jquery-2.2.0.min.js"></script>
+    <script src="/public/js/bootstrap.js"></script>
+</head>
+<body>
+<% if(locals.login) {%>
+<div class="jumbotron" id="log_success">
+    <h1>欢迎你访问我的博客!</h1>
+    <%= locals.login%>
+   <%if(locals.admin){%>
+    你好管理员 <a href="/admin">管理后台</a>
+    <%}%>
+    <p><a class="btn btn-primary btn-lg" href="/logout" role="button">退出</a></p>
+</div>
+<% }else{ %>
+<div class="container" style="width:300px;margin:150px auto;display:none;" id="reibox">
+    <div class="form-group">
+        <label for="name">用户名</label>
+        <input type="text" class="form-control" id="name" placeholder="请输入用户名" name="username">
+    </div>
+    <div class="form-group">
+        <label for="password">密码</label>
+        <input type="password" class="form-control" id="password" placeholder="请输入密码" name="password">
+    </div>
+    <div class="form-group">
+        <label for="repassword">再次输入密码</label>
+        <input type="password" class="form-control" id="repassword" placeholder="请再次输入密码" name="repassword">
+    </div>
+    <a href="javascript:;"class="btn btn-default" id="submit">注册</a>
+</div>
+<div class="container" style="width:300px;margin:150px auto;" id="logbox">
+    <div class="form-group">
+        <label for="name">用户名</label>
+        <input type="text" class="form-control" id="name" placeholder="请输入用户名" name="username">
+    </div>
+    <div class="form-group">
+        <label for="password">密码</label>
+        <input type="password" class="form-control" id="password" placeholder="请输入密码" name="password">
+    </div>
+    <button class="btn btn-default" id="log_submit">登录</button>
+    <button class="btn btn-default" id="lj_reg">立即注册</button>
+</div>
+<% } %>
+
+</body>
+
+<script>
+    $('#lj_reg').click(()=>{
+        $('#logbox').hide();
+        $('#reibox').show();
+    })
+    $('#log_submit').click(()=>{
+        $.ajax({
+            url:'/login',
+            type:'post',
+            dataType:'json',
+            data:{
+                username:$("#logbox").find("[name='username']").val(),
+                password:$("#logbox").find("[name='password']").val()
+            },
+            success:(data)=>{
+                window.location.reload();
+            },
+            error:(data)=>{
+                alert('用户名或密码错误，请重新输入');
+                window.location.reload();
+            }
+        })
+    })
+    $('#submit').click(()=>{
+        $.ajax({
+            url:'/rei',
+            type:'post',
+            dataType:'json',
+            data:{
+                username:$("#reibox").find("[name='username']").val(),
+                password:$("#reibox").find("[name='password']").val(),
+                repassword:$("#reibox").find("[name='repassword']").val()
+            },
+            success:function(data){
+                $('#reibox').hide();
+                $('#logbox').show();
+                window.location.reload();
+            },
+            error:function(data){
+                alert("注册失败，该用户已存在");
+                window.location.reload();
+            }
+        });
+    })
+</script>
+</html>
